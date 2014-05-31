@@ -31,7 +31,7 @@
 #include <stdio.h>
 
 #include <libusb.h>
-#include <ftdi.h>
+#include <libftdi1/ftdi.h>
 
 #include "serial.h"
 #include "context-private.h"
@@ -81,7 +81,11 @@ open_ftdi_device (struct ftdi_context *ftdi_ctx)
 	int i, pid, ret;
 	for (i = 0; i < num_accepted_pids; i++) {
 		pid = accepted_pids[i];
+#ifdef HAVE_LIBFTDI_FD
+		ret = ftdi_usb_open_fd (ftdi_ctx, VID, pid, usb_fd);
+#else
 		ret = ftdi_usb_open (ftdi_ctx, VID, pid);
+#endif
 		if (ret == -3) // Device not found
 			continue;
 		else

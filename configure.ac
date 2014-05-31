@@ -73,12 +73,48 @@ esac
 AC_MSG_RESULT([$os_win32])
 AM_CONDITIONAL([OS_WIN32], [test "$os_win32" = "yes"])
 
+# Checks for Android.
+AC_MSG_CHECKING([for Android])
+case "$host" in
+  *-linux-android*)
+    os_android=yes
+    ;;
+  *)
+    os_android=no
+    ;;
+esac
+AC_MSG_RESULT([$os_android])
+AM_CONDITIONAL([OS_ANDROID], [test "$os_android" = "yes"])
+
 # Checks for USB support.
 PKG_CHECK_MODULES([LIBUSB], [libusb-1.0], [have_libusb=yes], [have_libusb=no])
 if test "$have_libusb" = "yes"; then
 	AC_DEFINE([HAVE_LIBUSB], [1], [libusb support])
-	AC_SUBST([DEPENDENCIES], [libusb-1.0])
+	dependencies="libusb-1.0"
 fi
+
+# Checks for FTDI support.
+PKG_CHECK_MODULES([LIBFTDI1], [libftdi1], [have_libftdi1=yes], [have_libftdi1=no])
+if test "$have_libftdi1" = "yes"; then
+	AC_DEFINE([HAVE_LIBFTDI1], [1], [libftdi support])
+	dependencies+=" libftdi1"
+fi
+
+if test "$os_android" = yes; then
+       # Checks for FTDI support.
+       PKG_CHECK_MODULES([LIBFTDI1], [libftdi1], [have_libftdi1=yes], [have_libftdi1=no])
+       if test "$have_libftdi1" = "yes"; then
+               AC_DEFINE([HAVE_LIBFTDI1], [1], [libftdi support])
+               dependencies+=" libftdi1"
+       fi
+       # Checking for presence of ftdi_usb_open_fd function in libftdi
+       AC_SEARCH_LIBS([ftdi_usb_open_fd], [ftdi1], [have_libftdi_fd=yes], [have_libftdi_fd=no], [-lusb-1.0])
+       if test "$have_libftdi_fd" = "yes"; then
+	       AC_DEFINE([HAVE_LIBFTDI_FD], [1], [ftdi_usb_open_fd function])
+       fi
+fi
+
+AC_SUBST([DEPENDENCIES], [$dependencies])
 
 # Checks for IrDA support.
 AC_CHECK_HEADERS([winsock2.h af_irda.h], [irda_win32=yes], [irda_win32=no], [

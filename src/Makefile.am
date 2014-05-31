@@ -1,9 +1,16 @@
 AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include
 AM_CFLAGS = $(LIBUSB_CFLAGS)
+if OS_ANDROID
+AM_CFLAGS += $(LIBFTDI1_CFLAGS)
+endif
 
 lib_LTLIBRARIES = libdivecomputer.la
 
 libdivecomputer_la_LIBADD = $(LIBUSB_LIBS)
+if OS_ANDROID
+libdivecomputer_la_LIBADD += $(LIBFTDI1_LIBS)
+endif
+
 libdivecomputer_la_LDFLAGS = \
 	-version-info $(DC_VERSION_LIBTOOL) \
 	-no-undefined \
@@ -64,8 +71,13 @@ libdivecomputer_la_SOURCES = \
 if OS_WIN32
 libdivecomputer_la_SOURCES += serial.h serial_win32.c
 else
+if OS_ANDROID
+libdivecomputer_la_SOURCES += serial.h serial_ftdi.c
+else
 libdivecomputer_la_SOURCES += serial.h serial_posix.c
 endif
+endif
+
 
 if IRDA
 if OS_WIN32

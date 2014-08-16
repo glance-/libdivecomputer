@@ -127,8 +127,9 @@ serial_enumerate (serial_callback_t callback, void *userdata)
 //
 
 int
-serial_open (serial_t **out, dc_context_t *context, const char* name)
+serial_open (serial_t **out, dc_context_t *context, const void *params)
 {
+	const char *name = (const char *) params;
 	if (out == NULL)
 		return -1; // EINVAL (Invalid argument)
 

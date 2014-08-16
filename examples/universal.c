@@ -748,7 +748,7 @@ dowork (dc_context_t *context, dc_descriptor_t *descriptor, const char *devname,
 		dc_descriptor_get_product (descriptor),
 		devname ? devname : "null");
 	dc_device_t *device = NULL;
-	rc = dc_device_open (&device, context, descriptor, devname);
+	rc = dc_device_open (&device, context, descriptor, (void *) devname);
 	if (rc != DC_STATUS_SUCCESS) {
 		WARNING ("Error opening device.");
 		return rc;

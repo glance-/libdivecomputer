@@ -147,7 +147,7 @@ diverite_nitekq_handshake (diverite_nitekq_device_t *device)
 
 
 dc_status_t
-diverite_nitekq_device_open (dc_device_t **out, dc_context_t *context, const char *name)
+diverite_nitekq_device_open (dc_device_t **out, dc_context_t *context, const void *params)
 {
 	if (out == NULL)
 		return DC_STATUS_INVALIDARGS;
@@ -167,7 +167,7 @@ diverite_nitekq_device_open (dc_device_t **out, dc_context_t *context, const cha
 	memset (device->fingerprint, 0, sizeof (device->fingerprint));
 
 	// Open the device.
-	int rc = serial_open (&device->port, context, name);
+	int rc = serial_open (&device->port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

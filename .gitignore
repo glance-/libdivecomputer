@@ -32,6 +32,8 @@ Makefile.in
 /stamp-h1
 /tags
 
+/build
+
 /examples/aladin
 /examples/atom2
 /examples/d9

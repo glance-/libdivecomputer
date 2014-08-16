@@ -70,7 +70,7 @@ struct serial_t {
 
 // Used internally for opening ftdi devices
 int
-open_ftdi_device (struct ftdi_context *ftdi_ctx)
+open_ftdi_device_fd (struct ftdi_context *ftdi_ctx, int usb_fd)
 {
 	int accepted_pids[] = { 0x6001, 0x6010, 0x6011, // Suunto (Smart Interface), Heinrichs Weikamp
 		0xF460, // Oceanic
@@ -109,12 +109,13 @@ serial_enumerate (serial_callback_t callback, void *userdata)
 //
 
 int
-serial_open (serial_t **out, dc_context_t *context, const char* name)
+serial_open (serial_t **out, dc_context_t *context, const void *params)
 {
+
 	if (out == NULL)
 		return -1; // EINVAL (Invalid argument)
-
-        INFO (context, "Open: name=%s", name ? name : "");
+	int usb_fd = * (int *) params;
+        INFO (context, "Open: fd=%d", usb_fd);
 
         // Allocate memory.
         serial_t *device = (serial_t *) malloc (sizeof (serial_t));
@@ -148,7 +149,7 @@ serial_open (serial_t **out, dc_context_t *context, const char* name)
 		return -1;
 	}
 
-        if (open_ftdi_device(ftdi_ctx) < 0) {
+        if (open_ftdi_device_fd(ftdi_ctx, usb_fd) < 0) {
                 ERROR (context, ftdi_get_error_string(ftdi_ctx));
                 return -1;
         }

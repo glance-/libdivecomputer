@@ -94,7 +94,7 @@ static const mares_darwin_layout_t mares_darwinair_layout = {
 
 
 dc_status_t
-mares_darwin_device_open (dc_device_t **out, dc_context_t *context, const char *name, unsigned int model)
+mares_darwin_device_open (dc_device_t **out, dc_context_t *context, const void *params, unsigned int model)
 {
 	if (out == NULL)
 		return DC_STATUS_INVALIDARGS;
@@ -118,7 +118,7 @@ mares_darwin_device_open (dc_device_t **out, dc_context_t *context, const char *
 		device->layout = &mares_darwin_layout;
 
 	// Open the device.
-	int rc = serial_open (&device->base.port, context, name);
+	int rc = serial_open (&device->base.port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

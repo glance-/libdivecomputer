@@ -68,7 +68,7 @@ static const dc_device_vtable_t uwatec_memomouse_device_vtable = {
 
 
 dc_status_t
-uwatec_memomouse_device_open (dc_device_t **out, dc_context_t *context, const char *name)
+uwatec_memomouse_device_open (dc_device_t **out, dc_context_t *context, const void *params)
 {
 	if (out == NULL)
 		return DC_STATUS_INVALIDARGS;
@@ -90,7 +90,7 @@ uwatec_memomouse_device_open (dc_device_t **out, dc_context_t *context, const ch
 	device->devtime = 0;
 
 	// Open the device.
-	int rc = serial_open (&device->port, context, name);
+	int rc = serial_open (&device->port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

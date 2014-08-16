@@ -127,7 +127,7 @@ suunto_d9_device_autodetect (suunto_d9_device_t *device, unsigned int model)
 
 
 dc_status_t
-suunto_d9_device_open (dc_device_t **out, dc_context_t *context, const char *name, unsigned int model)
+suunto_d9_device_open (dc_device_t **out, dc_context_t *context, const void *params, unsigned int model)
 {
 	if (out == NULL)
 		return DC_STATUS_INVALIDARGS;
@@ -146,7 +146,7 @@ suunto_d9_device_open (dc_device_t **out, dc_context_t *context, const char *nam
 	device->port = NULL;
 
 	// Open the device.
-	int rc = serial_open (&device->port, context, name);
+	int rc = serial_open (&device->port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

@@ -42,7 +42,7 @@ typedef enum reefnet_sensusultra_parameter_t {
 } reefnet_sensusultra_parameter_t;
 
 dc_status_t
-reefnet_sensusultra_device_open (dc_device_t **device, dc_context_t *context, const char *name);
+reefnet_sensusultra_device_open (dc_device_t **device, dc_context_t *context, const void *params);
 
 dc_status_t
 reefnet_sensusultra_device_get_handshake (dc_device_t *device, unsigned char data[], unsigned int size);

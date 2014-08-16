@@ -31,7 +31,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 dc_status_t
-shearwater_petrel_device_open (dc_device_t **device, dc_context_t *context, const char *name);
+shearwater_petrel_device_open (dc_device_t **device, dc_context_t *context, const void *params);
 
 dc_status_t
 shearwater_petrel_parser_create (dc_parser_t **parser, dc_context_t *context);

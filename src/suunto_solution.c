@@ -63,7 +63,7 @@ static const dc_device_vtable_t suunto_solution_device_vtable = {
 
 
 dc_status_t
-suunto_solution_device_open (dc_device_t **out, dc_context_t *context, const char *name)
+suunto_solution_device_open (dc_device_t **out, dc_context_t *context, const void *params)
 {
 	if (out == NULL)
 		return DC_STATUS_INVALIDARGS;
@@ -82,7 +82,7 @@ suunto_solution_device_open (dc_device_t **out, dc_context_t *context, const cha
 	device->port = NULL;
 
 	// Open the device.
-	int rc = serial_open (&device->port, context, name);
+	int rc = serial_open (&device->port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

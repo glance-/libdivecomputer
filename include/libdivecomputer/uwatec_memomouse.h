@@ -31,7 +31,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 dc_status_t
-uwatec_memomouse_device_open (dc_device_t **device, dc_context_t *context, const char *name);
+uwatec_memomouse_device_open (dc_device_t **device, dc_context_t *context, const void *params);
 
 dc_status_t
 uwatec_memomouse_extract_dives (dc_device_t *device, const unsigned char data[], unsigned int size, dc_dive_callback_t callback, void *userdata);

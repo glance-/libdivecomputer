@@ -33,7 +33,7 @@ extern "C" {
 #define SUUNTO_D9_VERSION_SIZE 0x04
 
 dc_status_t
-suunto_d9_device_open (dc_device_t **device, dc_context_t *context, const char *name, unsigned int model);
+suunto_d9_device_open (dc_device_t **device, dc_context_t *context, const void *params, unsigned int model);
 
 dc_status_t
 suunto_d9_device_version (dc_device_t *device, unsigned char data[], unsigned int size);

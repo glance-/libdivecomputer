@@ -87,7 +87,7 @@ reefnet_sensus_cancel (reefnet_sensus_device_t *device)
 
 
 dc_status_t
-reefnet_sensus_device_open (dc_device_t **out, dc_context_t *context, const char *name)
+reefnet_sensus_device_open (dc_device_t **out, dc_context_t *context, const void *params)
 {
 	if (out == NULL)
 		return DC_STATUS_INVALIDARGS;
@@ -111,7 +111,7 @@ reefnet_sensus_device_open (dc_device_t **out, dc_context_t *context, const char
 	memset (device->handshake, 0, sizeof (device->handshake));
 
 	// Open the device.
-	int rc = serial_open (&device->port, context, name);
+	int rc = serial_open (&device->port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

@@ -88,7 +88,7 @@ static const mares_common_layout_t mares_nemo_apneist_layout = {
 
 
 dc_status_t
-mares_nemo_device_open (dc_device_t **out, dc_context_t *context, const char *name)
+mares_nemo_device_open (dc_device_t **out, dc_context_t *context, const void *params)
 {
 	if (out == NULL)
 		return DC_STATUS_INVALIDARGS;
@@ -108,7 +108,7 @@ mares_nemo_device_open (dc_device_t **out, dc_context_t *context, const char *na
 	memset (device->fingerprint, 0, sizeof (device->fingerprint));
 
 	// Open the device.
-	int rc = serial_open (&device->port, context, name);
+	int rc = serial_open (&device->port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

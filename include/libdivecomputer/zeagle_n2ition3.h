@@ -30,7 +30,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 dc_status_t
-zeagle_n2ition3_device_open (dc_device_t **device, dc_context_t *context, const char *name);
+zeagle_n2ition3_device_open (dc_device_t **device, dc_context_t *context, const void *params);
 
 #ifdef __cplusplus
 }

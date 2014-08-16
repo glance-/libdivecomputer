@@ -31,7 +31,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 dc_status_t
-oceanic_vtpro_device_open (dc_device_t **device, dc_context_t *context, const char *name);
+oceanic_vtpro_device_open (dc_device_t **device, dc_context_t *context, const void *params);
 
 dc_status_t
 oceanic_vtpro_device_version (dc_device_t *device, unsigned char data[], unsigned int size);

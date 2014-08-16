@@ -496,7 +496,7 @@ oceanic_atom2_quit (oceanic_atom2_device_t *device)
 
 
 dc_status_t
-oceanic_atom2_device_open (dc_device_t **out, dc_context_t *context, const char *name)
+oceanic_atom2_device_open (dc_device_t **out, dc_context_t *context, const void *params)
 {
 	return oceanic_atom2_device_open2 (out, context, name, 0);
 }
@@ -527,7 +527,7 @@ oceanic_atom2_device_open2 (dc_device_t **out, dc_context_t *context, const char
 	memset(device->cache, 0, sizeof(device->cache));
 
 	// Open the device.
-	int rc = serial_open (&device->port, context, name);
+	int rc = serial_open (&device->port, context, params);
 	if (rc == -1) {
 		ERROR (context, "Failed to open the serial port.");
 		free (device);

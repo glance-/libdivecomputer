@@ -31,7 +31,7 @@
 #include <stdio.h>
 
 #include <libusb.h>
-#include <libftdi1/ftdi.h>
+#include <ftdi.h>
 
 #include "serial.h"
 #include "context-private.h"

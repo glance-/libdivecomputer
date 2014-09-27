@@ -113,7 +113,7 @@ serial_enumerate (serial_callback_t callback, void *userdata)
 	int num = sizeof (accepted_pids) / sizeof (accepted_pids[0]);
 	int i;
 	for (i = 0; i < num; i++) {
-		struct libusb_device *dev;
+		struct usb_device *dev;
 		struct ftdi_device_list *devlist = NULL;
 		int j = ftdi_usb_find_all( ftdi_ctx, &devlist, VID, accepted_pids[i]);
 		while (devlist != NULL) {

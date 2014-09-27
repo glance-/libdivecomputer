@@ -77,7 +77,11 @@ struct serial_t {
 
 // Used internally for opening ftdi devices
 int
+#ifdef HAVE_LIBFTDI_FD
 open_ftdi_device_fd (struct ftdi_context *ftdi_ctx, int usb_fd)
+#else
+open_ftdi_device(struct ftdi_context *ftdi_ctx)
+#endif
 {
 	int num_accepted_pids = sizeof (accepted_pids) / sizeof (accepted_pids[0]);
 	int i, pid, ret;
@@ -133,13 +137,18 @@ serial_enumerate (serial_callback_t callback, void *userdata)
 //
 
 int
-serial_open (serial_t **out, dc_context_t *context, const void *params)
+serial_open(serial_t **out, dc_context_t *context, const void *params)
 {
 
 	if (out == NULL)
 		return -1; // EINVAL (Invalid argument)
-	int usb_fd = * (int *) params;
-	INFO (context, "Open: fd=%d", usb_fd);
+#ifdef HAVE_LIBFTDI_FD
+	int usb_fd;
+	if (params != NULL) {
+		usb_fd = * (int *) params;
+		INFO (context, "Open: fd=%d", usb_fd);
+	}
+#endif
 
 	// Allocate memory.
 	serial_t *device = (serial_t *) malloc (sizeof (serial_t));
@@ -173,7 +182,11 @@ serial_open (serial_t **out, dc_context_t *context, const void *params)
 		return -1;
 	}
 
+#ifdef HAVE_LIBFTDI_FD
 	if (open_ftdi_device_fd(ftdi_ctx, usb_fd) < 0) {
+#else
+	if (open_ftdi_device(ftdi_ctx) < 0) {
+#endif
 		ERROR (context, ftdi_get_error_string(ftdi_ctx));
 		return -1;
 	}

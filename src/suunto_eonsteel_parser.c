@@ -579,6 +579,8 @@ static void sample_gas_switch_event(struct sample_data *info, unsigned short idx
 	sample.event.time = 0;
 	sample.event.flags = 0;
 	sample.event.value = o2 | (he << 16);
+	sample.event.flags = idx;
+
 	if (info->callback) info->callback(DC_SAMPLE_EVENT, sample, info->userdata);
 #endif
 }

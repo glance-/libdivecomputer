@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include
-AM_CFLAGS = $(LIBUSB_CFLAGS) -DENABLE_DEPRECATED
+AM_CFLAGS = $(WARNING_CFLAGS) $(LIBUSB_CFLAGS) -DENABLE_DEPRECATED
 
 lib_LTLIBRARIES = libdivecomputer.la
 

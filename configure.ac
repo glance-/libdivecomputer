@@ -28,6 +28,32 @@ LT_PREREQ([2.2.0])
 LT_INIT([win32-dll])
 LT_PROG_RC
 
+# If were running gcc, give the option for some warnings, and enable -Wall by default
+WARNING_CFLAGS=""
+AC_ARG_ENABLE([gcc-compile-warnings],
+	[AS_HELP_STRING([--enable-gcc-compile-warnings=@<:@no/yes/maximum/error@:>@],
+		[Turn on compiler warnings @<:@default=yes@:>@])],
+	[case "$enableval" in
+		no)
+			;;
+		'' | yes)
+			WARNING_CFLAGS="-Wall"
+			;;
+		maximum)
+			WARNING_CFLAGS="-Wall -Wextra -pedantic"
+			;;
+		error)
+			WARNING_CFLAGS="-Wall -Werror -Wextra -pedantic"
+			;;
+		*)
+			AC_MSG_ERROR([Unknown argument '$enableval' to --enable-gcc-compile-warnings])
+			;;
+	esac],
+	[WARNING_CFLAGS="-Wall"])
+AS_IF([test "x$GCC" = "xyes"], [
+	AC_SUBST([WARNING_CFLAGS])
+])
+
 # Logging support.
 AC_ARG_ENABLE([logging],
 	[AS_HELP_STRING([--enable-logging=@<:@yes/no@:>@],

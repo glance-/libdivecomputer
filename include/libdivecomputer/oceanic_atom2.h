@@ -34,7 +34,7 @@ dc_status_t
 oceanic_atom2_device_open (dc_device_t **device, dc_context_t *context, const void *params);
 
 dc_status_t
-oceanic_atom2_device_open2 (dc_device_t **device, dc_context_t *context, const char *name, unsigned int model);
+oceanic_atom2_device_open2 (dc_device_t **device, dc_context_t *context, const void *params, unsigned int model);
 
 dc_status_t
 oceanic_atom2_device_version (dc_device_t *device, unsigned char data[], unsigned int size);

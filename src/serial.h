@@ -23,37 +23,13 @@
 #define SERIAL_H
 
 #include <libdivecomputer/context.h>
+#include <libdivecomputer/serial_parameters.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 #include <libdivecomputer/custom_serial.h>
-
-typedef enum serial_parity_t {
-	SERIAL_PARITY_NONE,
-	SERIAL_PARITY_EVEN,
-	SERIAL_PARITY_ODD
-} serial_parity_t;
-
-typedef enum serial_flowcontrol_t {
-	SERIAL_FLOWCONTROL_NONE,
-	SERIAL_FLOWCONTROL_HARDWARE,
-	SERIAL_FLOWCONTROL_SOFTWARE
-} serial_flowcontrol_t;
-
-typedef enum serial_queue_t {
-	SERIAL_QUEUE_INPUT = 0x01,
-	SERIAL_QUEUE_OUTPUT = 0x02,
-	SERIAL_QUEUE_BOTH = SERIAL_QUEUE_INPUT | SERIAL_QUEUE_OUTPUT
-} serial_queue_t;
-
-typedef enum serial_line_t {
-	SERIAL_LINE_DCD, // Data carrier detect
-	SERIAL_LINE_CTS, // Clear to send
-	SERIAL_LINE_DSR, // Data set ready
-	SERIAL_LINE_RNG, // Ring indicator
-} serial_line_t;
 
 typedef void (*serial_callback_t) (const char *name, void *userdata);
 

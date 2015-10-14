@@ -69,6 +69,8 @@ struct shearwater_predator_parser_t {
 	unsigned int helium[NGASMIXES];
 	unsigned int serial;
 	dc_divemode_t mode;
+	unsigned int sensor_cal_value[3];
+	signed char sensor_adc_offset[3];
 };
 
 static dc_status_t shearwater_predator_parser_set_data (dc_parser_t *abstract, const unsigned char *data, unsigned int size);
@@ -297,6 +299,25 @@ shearwater_predator_parser_cache (shearwater_predator_parser_t *parser)
 		offset += parser->samplesize;
 	}
 
+	// Cache sensor calibration for later use
+	parser->sensor_cal_value[0] = array_uint16_be(data + 87);
+	parser->sensor_cal_value[1] = array_uint16_be(data + 89);
+	parser->sensor_cal_value[2] = array_uint16_be(data + 91);
+	// The Predator expects the mV output of the cells to be within 30mV to
+	// 70mV in 100% O2 at 1 atmosphere.
+	// If we add 1024 (1000?) to the cal value, then the sensors lines up
+	// and matches the average
+	parser->sensor_cal_value[0] += 1024;
+	parser->sensor_cal_value[1] += 1024;
+	parser->sensor_cal_value[2] += 1024;
+
+	// Cache sensor adc offset for later use
+	// Unit is probably 0.025 mV
+	// Is this included in the stored value, or its it "raw"?
+	parser->sensor_adc_offset[0] = data[93];
+	parser->sensor_adc_offset[1] = data[94];
+	parser->sensor_adc_offset[2] = data[95];
+
 	// Cache the data for later use.
 	parser->headersize = headersize;
 	parser->footersize = footersize;
@@ -493,8 +514,19 @@ shearwater_predator_parser_samples_foreach (dc_parser_t *abstract, dc_sample_cal
 
 		if ((status & OC) == 0) {
 			// PPO2 -- only return PPO2 if we are in closed circuit mode
+#ifdef SENSOR_AVERAGE
 			sample.ppo2 = data[offset + 6] / 100.0;
 			if (callback) callback (DC_SAMPLE_PPO2, sample, userdata);
+#else
+			sample.ppo2 = data[offset + 12] * parser->sensor_cal_value[0] / 100000.0;
+			if (callback && (data[86] & 0x01)) callback (DC_SAMPLE_PPO2, sample, userdata);
+
+			sample.ppo2 = data[offset + 14] * parser->sensor_cal_value[1] / 100000.0;
+			if (callback && (data[86] & 0x02)) callback (DC_SAMPLE_PPO2, sample, userdata);
+
+			sample.ppo2 = data[offset + 15] * parser->sensor_cal_value[2] / 100000.0;
+			if (callback && (data[86] & 0x04)) callback (DC_SAMPLE_PPO2, sample, userdata);
+#endif
 
 			// Setpoint
 			if (parser->petrel) {

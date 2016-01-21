@@ -338,18 +338,18 @@ error_free:
 dc_status_t
 hw_ostc3_device_custom_open (dc_device_t **out, dc_context_t *context, dc_serial_t *serial)
 {
+	dc_status_t status = DC_STATUS_SUCCESS;
+	hw_ostc3_device_t *device = NULL;
+
 	if (out == NULL || serial == NULL || serial->port == NULL)
 		return DC_STATUS_INVALIDARGS;
 
 	// Allocate memory.
-	hw_ostc3_device_t *device = (hw_ostc3_device_t *) malloc (sizeof (hw_ostc3_device_t));
+	device = (hw_ostc3_device_t *) dc_device_allocate (context, &hw_ostc3_device_vtable);
 	if (device == NULL) {
 		ERROR (context, "Failed to allocate memory.");
 		return DC_STATUS_NOMEMORY;
 	}
-
-	// Initialize the base class.
-	device_init (&device->base, context, &hw_ostc3_device_vtable);
 
 	// Set the default values.
 	memset (device->fingerprint, 0, sizeof (device->fingerprint));

@@ -95,6 +95,7 @@ typedef struct hw_ostc_layout_t {
 	unsigned int deco_info1;
 	unsigned int deco_info2;
 	unsigned int decomode;
+	unsigned int battery2;
 } hw_ostc_layout_t;
 
 typedef struct hw_ostc_gasmix_t {
@@ -148,6 +149,7 @@ static const hw_ostc_layout_t hw_ostc_layout_ostc = {
 	49, /* deco_info1 */
 	50, /* deco_info1 */
 	51, /* decomode */
+	UNSUPPORTED,  /* battery2 */
 };
 
 static const hw_ostc_layout_t hw_ostc_layout_frog = {
@@ -165,6 +167,7 @@ static const hw_ostc_layout_t hw_ostc_layout_frog = {
 	49, /* deco_info1 */
 	50, /* deco_info2 */
 	51, /* decomode */
+	UNSUPPORTED,  /* battery2 */
 };
 
 static const hw_ostc_layout_t hw_ostc_layout_ostc3 = {
@@ -182,6 +185,7 @@ static const hw_ostc_layout_t hw_ostc_layout_ostc3 = {
 	77, /* deco_info1 */
 	78, /* deco_info2 */
 	79, /* decomode */
+	59, /* battery2 */
 };
 
 static unsigned int
@@ -616,6 +620,36 @@ hw_ostc_parser_get_field (dc_parser_t *abstract, dc_field_type_t type, unsigned 
 					snprintf(buf, BUFLEN, "GF %u/%u", data[layout->deco_info1], data[layout->deco_info2]);
 				else
 					return DC_STATUS_DATAFORMAT;
+				break;
+			case 6: /* More battery info */
+				if ((version == 0x23 || version == 0x24) && data[layout->battery2] != 0xFF) {
+					string->desc = "Battery info";
+					const char *type;
+					// =0:1.5V, =1:3,6V Saft, =2:LiIon 3,7V/0.8Ah, =3:LiIon 3,7V/3.1Ah, =4: LiIon 3,7V/2.3Ah
+					switch ((data[layout->battery2] & 0xF0) >> 4) {
+					case 0:
+						type = "1.5V";
+						break;
+					case 1:
+						type = "3.6V Saft";
+						break;
+					case 2:
+						type = "LiIon 3,7V/0.8Ah";
+						break;
+					case 3:
+						type = "LiIon 3,7V/3.1Ah";
+						break;
+					case 4:
+						type = "LiIon 3,7V/2.3Ah";
+						break;
+					default:
+						type = "unknown";
+						break;
+					}
+					unsigned int percent = (data[layout->battery2] & 0x0F);
+					snprintf(buf, BUFLEN, "%s %u%%", type, percent);
+				}  else
+					return DC_STATUS_UNSUPPORTED;
 				break;
 			default:
 				return DC_STATUS_UNSUPPORTED;
